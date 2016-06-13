@@ -12,10 +12,12 @@ namespace AG_Framework
         public static AG_GameFlowMainWindow currentWindow;
 
         GUISkin viewSkin;
-        AG_Graph currentGraph;
+        public AG_Graph currentGraph;
         public string graphTitle;
 
         Rect windowRect;
+
+		Vector2 mousePosition;
 
         #endregion
 
@@ -64,14 +66,18 @@ namespace AG_Framework
             //GUI.Box(position, graphTitle, ViewSkin.GetStyle("ViewBG"));
             GUI.Box(new Rect(0,0,position.width, position.height), graphTitle);
            
-            //Bottom Area (Chapter choose)
-            //Rect bottomRect = new Rect(10, position.height - 30.0f, 200, 30.0f);
-            //GUILayout.BeginArea(bottomRect);
+            
 
-            //if (GUILayout.Button("Press me"))
-            //    Debug.Log("Button pressed");
+			NodesGUI ();
 
-            //GUILayout.EndArea();
+			//Bottom Area (Chapter choose)
+			Rect bottomRect = new Rect(10, position.height - 30.0f, 200, 30.0f);
+			GUILayout.BeginArea(bottomRect);
+
+			if (GUILayout.Button("Press me"))
+			    Debug.Log("Button pressed");
+
+			GUILayout.EndArea();
 
             // Get and process the current event
             Event e = Event.current;
@@ -96,9 +102,11 @@ namespace AG_Framework
                             if (e.button == 0)
                             {
                                 Debug.Log("Left click in node");
+								ProcessNodeLeftClick (e, node);
                             } else if (e.button == 1)
                             {
                                 Debug.Log("Right click in node");
+								ProcessNodeRightClick (e, node);
                             }
 
                             return;
@@ -119,6 +127,7 @@ namespace AG_Framework
                     if (e.button == 1)
                     {
                         Debug.Log("Right click inside window");
+						ProcessContextMenuWindow (e);
                     }
                 }
             }
@@ -127,8 +136,81 @@ namespace AG_Framework
 
         #endregion
 
+		void NodesGUI()
+		{
+			if (currentGraph != null && currentGraph.nodes != null) 
+			{
+				foreach (AG_Node node in currentGraph.nodes)
+				{
+					GUI.Box (node.nodeRect, node.nodeName);
+				}
+			}
+
+		}
+
+		private void ProcessContextMenuWindow(Event e)
+		{
+			GenericMenu menu = new GenericMenu();
+
+			mousePosition = e.mousePosition;
+
+			menu.AddItem(new GUIContent("Create graph"), false, ContextCallback, "0");
+			menu.AddItem(new GUIContent("Load graph"), false, ContextCallback, "1");
+
+			if (currentGraph != null)
+			{
+				menu.AddSeparator("");
+				menu.AddItem(new GUIContent("Unload graph"), false, ContextCallback, "2");
+
+				menu.AddSeparator("");
+				menu.AddItem(new GUIContent("Float Node"), false, ContextCallback, "3");
+				menu.AddItem(new GUIContent("Add Node"), false, ContextCallback, "4");
+
+			}
+
+
+			menu.ShowAsContext();
+			e.Use();
+		}
+
+		private void ContextCallback(object obj)
+		{
+			switch (obj.ToString())
+			{
+			case "0":
+				AG_CreateGraphWindow.InitNodePopup ();
+//				NodePopupWindow.InitNodePopup();
+				break;
+//			case "1":
+//				NodeUtils.LoadGraph();
+//				break;
+//			case "2":
+//				NodeUtils.UnloadGraph();
+//				break;
+			case "3":
+//				NodeUtils.CreateNode (CurrentGraph, NodeType.Float, MousePosition);
+				currentGraph.nodes.Add(AG_Node.CreateNode (mousePosition, currentGraph));
+				break;
+			case "4":
+//				NodeUtils.CreateNode(CurrentGraph, NodeType.Add, MousePosition);
+				break;
+//			case "5":
+//				NodeUtils.DeleteNode(NodeToDelete, CurrentGraph);
+//				break;
+			}
+		}
+
         #region Utility Methods
 
+		void ProcessNodeLeftClick(Event e, AG_Node node)
+		{
+
+		}
+
+		void ProcessNodeRightClick(Event e, AG_Node node)
+		{
+
+		}
 
         #endregion
 
