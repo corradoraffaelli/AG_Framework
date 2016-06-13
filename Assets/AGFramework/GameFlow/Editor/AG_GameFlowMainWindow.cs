@@ -83,7 +83,30 @@ namespace AG_Framework
         private void ProcessEvents(Event e)
         {
             //Debug.Log(e.mousePosition +" " + position);
-            
+
+
+            if (currentGraph != null && currentGraph.nodes != null)
+            {
+                foreach(AG_Node node in currentGraph.nodes)
+                {
+                    if (node.nodeRect.Contains(e.mousePosition))
+                    {
+                        if (e.type == EventType.mouseDown)
+                        {
+                            if (e.button == 0)
+                            {
+                                Debug.Log("Left click in node");
+                            } else if (e.button == 1)
+                            {
+                                Debug.Log("Right click in node");
+                            }
+
+                            return;
+                        }
+                    }
+                }
+            }
+
             if (windowRect.Contains(e.mousePosition))
             {
                 if (e.type == EventType.MouseDown)
