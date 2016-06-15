@@ -13,6 +13,8 @@ namespace AG_Framework
 
         GUISkin viewSkin;
         public AG_Graph currentGraph;
+		public AG_Node selectedNode;
+		public AG_Node rightClickNode;
         public string graphTitle;
 
         Rect windowRect;
@@ -101,16 +103,26 @@ namespace AG_Framework
                         {
                             if (e.button == 0)
                             {
-                                Debug.Log("Left click in node");
 								ProcessNodeLeftClick (e, node);
+//								node.isSelected = true;
+								selectedNode = node;
                             } else if (e.button == 1)
                             {
-                                Debug.Log("Right click in node");
 								ProcessNodeRightClick (e, node);
                             }
 
                             return;
                         }
+
+//						else if (e.type == EventType.MouseDrag)
+//						{
+//							if (e.button == 0)
+//							{
+//								selectedNode.MouseDragged (e);
+//							} 
+//
+//							return;
+//						}
                     }
                 }
             }
@@ -131,6 +143,21 @@ namespace AG_Framework
                     }
                 }
             }
+
+			//If I'm dragging the mouse (left button) I move the selectedNode
+			if (e.type == EventType.MouseDrag)
+			{
+				if (e.button == 0)
+				{
+					selectedNode.MouseDragged (e);
+				} 
+
+				return;
+			}
+
+			// If the left mouse button is left, I deselect everything
+			if (e.button == 0 && e.type == EventType.mouseUp)
+				DeselectAllNodes ();
 
         }
 
@@ -159,12 +186,12 @@ namespace AG_Framework
 
 			if (currentGraph != null)
 			{
-				menu.AddSeparator("");
-				menu.AddItem(new GUIContent("Unload graph"), false, ContextCallback, "2");
+//				menu.AddSeparator("");
+//				menu.AddItem(new GUIContent("Unload graph"), false, ContextCallback, "2");
 
 				menu.AddSeparator("");
-				menu.AddItem(new GUIContent("Float Node"), false, ContextCallback, "3");
-				menu.AddItem(new GUIContent("Add Node"), false, ContextCallback, "4");
+				menu.AddItem(new GUIContent("Dialogue Node"), false, ContextCallback, "3");
+//				menu.AddItem(new GUIContent("Add Node"), false, ContextCallback, "4");
 
 			}
 
@@ -179,37 +206,105 @@ namespace AG_Framework
 			{
 			case "0":
 				AG_CreateGraphWindow.InitNodePopup ();
-//				NodePopupWindow.InitNodePopup();
 				break;
-//			case "1":
-//				NodeUtils.LoadGraph();
-//				break;
-//			case "2":
-//				NodeUtils.UnloadGraph();
-//				break;
+			case "1":
+				LoadGraph();
+				break;
 			case "3":
-//				NodeUtils.CreateNode (CurrentGraph, NodeType.Float, MousePosition);
-				currentGraph.nodes.Add(AG_Node.CreateNode (mousePosition, currentGraph));
-				break;
-			case "4":
-//				NodeUtils.CreateNode(CurrentGraph, NodeType.Add, MousePosition);
-				break;
-//			case "5":
-//				NodeUtils.DeleteNode(NodeToDelete, CurrentGraph);
-//				break;
+				{
+					AG_Node dialogueNode = AG_Node.CreateNode (mousePosition, currentGraph, AG_NodeType.Dialogue);
+
+					AssetDatabase.AddObjectToAsset (dialogueNode, currentGraph);
+					AssetDatabase.SaveAssets();
+					AssetDatabase.Refresh();
+
+					currentGraph.nodes.Add(dialogueNode);
+
+					break;
+				}
+
 			}
 		}
 
         #region Utility Methods
 
+		void DeselectAllNodes()
+		{
+			if (currentGraph != null) {
+				foreach (AG_Node node in currentGraph.nodes) {
+					node.isSelected = false;
+				}
+			}
+		}
+
 		void ProcessNodeLeftClick(Event e, AG_Node node)
 		{
-
+			node.LeftClick (e);
 		}
 
 		void ProcessNodeRightClick(Event e, AG_Node node)
 		{
+			ProcessContextMenuNode (e, node);
+		}
 
+		private void ProcessContextMenuNode(Event e, AG_Node node)
+		{
+			GenericMenu menu = new GenericMenu();
+
+			mousePosition = e.mousePosition;
+
+			rightClickNode = node;
+
+			menu.AddItem(new GUIContent("Delete node"), false, ContextCallbackNode, "0");
+
+			menu.ShowAsContext();
+			e.Use();
+		}
+
+		private void ContextCallbackNode(object obj)
+		{
+			switch (obj.ToString ()) {
+			case "0":
+				DeleteNode (rightClickNode, currentGraph);
+				break;
+			}
+		}
+
+
+		public static void LoadGraph()
+		{
+			AG_Graph nodeGraph = null;
+
+			int appPathLength = Application.dataPath.Length;
+			string dataPathWithoutAssets = Application.dataPath.Substring (0, appPathLength - 6);
+
+//			Debug.Log (dataPathWithoutAssets + ConstantKeys.DataPath_GameFlow);
+
+			string graphPath = EditorUtility.OpenFilePanel("Load Graph", dataPathWithoutAssets + ConstantKeys.DataPath_GameFlow,
+				"asset");
+
+			string finalPath = graphPath.Substring(appPathLength - 6);
+
+			nodeGraph = (AG_Graph)AssetDatabase.LoadAssetAtPath(finalPath, typeof(AG_Graph));
+
+			if (nodeGraph == null)
+			{
+				EditorUtility.DisplayDialog("Node Message:", "Unable to load the graph", "OK");
+			}
+
+			var currentNodeEditorWindow = EditorWindow.GetWindow<AG_GameFlowMainWindow>();
+			currentNodeEditorWindow.currentGraph = nodeGraph;
+		}
+
+		public static void DeleteNode(AG_Node currentNode, AG_Graph currentGraph)
+		{
+			if (currentGraph != null)
+			{
+				currentGraph.nodes.Remove(currentNode);
+				GameObject.DestroyImmediate(currentNode, true);
+				AssetDatabase.SaveAssets();
+				AssetDatabase.Refresh();
+			}
 		}
 
         #endregion

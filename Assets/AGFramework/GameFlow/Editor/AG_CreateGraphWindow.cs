@@ -12,7 +12,7 @@ namespace AG_Framework
 		public static void InitNodePopup()
 		{
 			currentPopupWindow = EditorWindow.GetWindow<AG_CreateGraphWindow>();
-			currentPopupWindow.title = "New chapter";
+			currentPopupWindow.titleContent = new GUIContent ("New chapter");
 		}
 
 		private void OnGUI()
@@ -41,6 +41,15 @@ namespace AG_Framework
 					if (currentWorkView != null)
 					{
 						currentWorkView.currentGraph = AG_Graph.CreateNodeGraph(wantedName);
+
+						if (currentWorkView.currentGraph != null) {
+							AssetDatabase.CreateAsset(currentWorkView.currentGraph, ConstantKeys.DataPath_GameFlow + currentWorkView.currentGraph.graphName + ".asset");
+							AssetDatabase.SaveAssets();
+							AssetDatabase.Refresh();
+						} else {
+							EditorUtility.DisplayDialog("Node Message:", "Unable to create graph", "OK");
+						}
+
 					}
 					currentPopupWindow.Close();
 				}

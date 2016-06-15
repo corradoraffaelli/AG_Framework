@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+//using UnityEditor;
+using System;
 
 namespace AG_Framework
 {
@@ -12,64 +14,78 @@ namespace AG_Framework
         public AG_NodeType nodeType;
         public Vector2 nodeSize;
 
-        public void InitNode()
+		public bool isSelected;
+
+		[Serializable]
+		public class NodeInput
+		{
+			public bool isOccupied;
+			public AG_Node inputNode;
+		}
+
+		[Serializable]
+		public class NodeOutput
+		{
+			public bool isOccupied;
+			public AG_Node outputNode;
+		}
+
+        public virtual void InitNode()
         {
 
         }
 
-		public AG_Node CreateNode(Vector2 mousePosition, AG_Graph parentGraph)
+		public static AG_Node CreateNode(Vector2 mousePosition, AG_Graph parentGraph, AG_NodeType nodeType)
 		{
 			AG_Node currentNode = null;
 
-//			NodeBase currentNode = null;
-//			switch (nodeType)
-//			{
-//			case NodeType.Float:
-//				currentNode = ScriptableObject.CreateInstance<FloatNode>();
-//				currentNode.NodeName = "Float Node";
-//				break;
-//			case NodeType.Add:
+			switch (nodeType)
+			{
+			case AG_NodeType.Dialogue:
+				currentNode = ScriptableObject.CreateInstance<AG_DialogueNode>();
+				currentNode.nodeName = "Dialogue Node";
+				break;
+//			case AG_NodeType.Add:
 //				currentNode = ScriptableObject.CreateInstance<AddNode>();
 //				currentNode.NodeName = "Add Node";
 //				break;
-//			}
+			}
 
-			currentNode = CreateNodeInstance ();
 
 			if (currentNode != null)
 			{
 				currentNode.InitNode();
 
-				var nodeRect = currentNode.nodeRect;
-
-				nodeRect.x = mousePosition.x;
-				nodeRect.y = mousePosition.y;
+				Rect nodeRect = new Rect (mousePosition.x - currentNode.nodeSize.x/2, mousePosition.y, currentNode.nodeSize.x, currentNode.nodeSize.y);
 
 				currentNode.nodeRect = nodeRect;
 				currentNode.parentGraph = parentGraph;
-
-
 			}
 
 			return currentNode;
 		}
 
-		public static AG_Node CreateNodeInstance()
+		public void MouseDragged(Event e)
 		{
-			Debug.LogError("Rememeber to override");
-			return null;
+			if (isSelected)
+			{
+				nodeRect.x += e.delta.x;
+				nodeRect.y += e.delta.y;
+			}
 		}
 
-//		public static void DeleteNode(NodeBase currentNode, NodeGraph currentGraph)
-//		{
-//			if (currentGraph != null)
-//			{
-//				currentGraph.Nodes.Remove(currentNode);
-//				GameObject.DestroyImmediate(currentNode, true);
-//				AssetDatabase.SaveAssets();
-//				AssetDatabase.Refresh();
-//			}
-//		}
+		public void LeftClick(Event e)
+		{
+			//I select the node for moving only if the click is in the upper part
+
+			Rect overPosition = new Rect (nodeRect.x, nodeRect.y, nodeSize.x, 30.0f);
+
+			if (overPosition.Contains (e.mousePosition))
+				isSelected = true;
+		}
+
+
+
     }
 }
 
