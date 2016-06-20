@@ -5,6 +5,7 @@ namespace AG_Framework
 {
     public enum AG_NodeType
     {
+		Begin,
         Dialogue,
         Hotspot,
         InventoryItem,

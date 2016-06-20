@@ -4,18 +4,18 @@ using System.Collections.Generic;
 
 namespace AG_Framework
 {
-	public class AG_DialogueNode : AG_Node {
-
-		public string dialogueLine = "Default Dialogue";
+	public class AG_BeginNode : AG_Node {
 
 		public override void InitNode ()
 		{
 			base.InitNode ();
 
-			nodeSize = new Vector2(150.0f, 120.0f);
+			nodeSize = new Vector2(150.0f, 80.0f);
+
+			hasInputEvent = false;
+			hasOutputEvent = true;
 		}
 
 	}
 }
-
 

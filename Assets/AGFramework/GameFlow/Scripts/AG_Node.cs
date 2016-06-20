@@ -2,6 +2,7 @@
 using System.Collections;
 //using UnityEditor;
 using System;
+using System.Collections.Generic;
 
 namespace AG_Framework
 {
@@ -16,19 +17,32 @@ namespace AG_Framework
 
 		public bool isSelected;
 
-		[Serializable]
-		public class NodeInput
-		{
-			public bool isOccupied;
-			public AG_Node inputNode;
-		}
+		public bool hasInputEvent = true;
+		public bool hasOutputEvent = true;
 
 		[Serializable]
-		public class NodeOutput
+		public class LinkNode
 		{
+			public bool input;
 			public bool isOccupied;
-			public AG_Node outputNode;
+			public string name;
+			public AG_Node otherNode;
+
 		}
+
+//		[Serializable]
+//		public class NodeOutput
+//		{
+//			public bool isOccupied;
+//			public string name;
+//			public AG_Node outputNode;
+//		}
+
+		public List<LinkNode> inputNodes;
+		public List<LinkNode> outputNodes;
+
+		public Rect inputLinkRect;
+		public Rect outputLinkRect;
 
         public virtual void InitNode()
         {
@@ -44,6 +58,10 @@ namespace AG_Framework
 			case AG_NodeType.Dialogue:
 				currentNode = ScriptableObject.CreateInstance<AG_DialogueNode>();
 				currentNode.nodeName = "Dialogue Node";
+				break;
+			case AG_NodeType.Begin:
+				currentNode = ScriptableObject.CreateInstance<AG_BeginNode>();
+				currentNode.nodeName = "Starting Node";
 				break;
 //			case AG_NodeType.Add:
 //				currentNode = ScriptableObject.CreateInstance<AddNode>();
@@ -83,7 +101,6 @@ namespace AG_Framework
 			if (overPosition.Contains (e.mousePosition))
 				isSelected = true;
 		}
-
 
 
     }
