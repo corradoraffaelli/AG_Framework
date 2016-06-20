@@ -29,6 +29,10 @@ namespace AG_Framework
 
 		bool draggingLinkNode = false;
 
+		private Vector2 scale = new Vector2(1, 1);
+		private Vector2 pivotPoint = Vector2.zero;
+		float zoomScale = 1.0f;
+
         #endregion
 
         #region Main Methods
@@ -56,6 +60,12 @@ namespace AG_Framework
         {
             if (currentWindow == null)
                 currentWindow = EditorWindow.GetWindow<AG_GameFlowMainWindow>();
+
+
+
+
+			GUIUtility.ScaleAroundPivot(scale, pivotPoint);
+
 
             // Skin loading
             //if (viewSkin == null)
@@ -110,12 +120,36 @@ namespace AG_Framework
 					subjectnerd.GLDraw.DrawConnectingCurve (e.mousePosition, clickedOutputNode.outputLinkRect.center, Color.red, 1.2f);
 			}
 
+
+
+			if (e.type == EventType.ScrollWheel)
+			{
+				var zoomDelta = 0.1f;
+				zoomDelta = e.delta.y < 0 ? zoomDelta : -zoomDelta;
+				zoomScale += zoomDelta;
+				zoomScale = Mathf.Clamp(zoomScale, 0.25f, 1.25f);
+
+				scale = new Vector2 (zoomScale, zoomScale);
+				pivotPoint = e.mousePosition;
+
+				e.Use();
+
+
+			}
+
+
+
+			//Scale
+//			pivotPoint = e.mousePosition;
+
+
+
+
             Repaint();
         }
 
         private void ProcessEvents(Event e)
         {
-            //Debug.Log(e.mousePosition +" " + position);
 
 			if (currentGraph != null && currentGraph.nodes != null) {
 				foreach (AG_Node node in currentGraph.nodes) {
@@ -147,7 +181,6 @@ namespace AG_Framework
                             if (e.button == 0)
                             {
 								ProcessNodeLeftClick (e, node);
-//								node.isSelected = true;
 								selectedNode = node;
                             } else if (e.button == 1)
                             {
@@ -157,15 +190,6 @@ namespace AG_Framework
                             return;
                         }
 
-//						else if (e.type == EventType.MouseDrag)
-//						{
-//							if (e.button == 0)
-//							{
-//								selectedNode.MouseDragged (e);
-//							} 
-//
-//							return;
-//						}
                     }
                 }
             }
@@ -181,7 +205,6 @@ namespace AG_Framework
 
                     if (e.button == 1)
                     {
-                        Debug.Log("Right click inside window");
 						ProcessContextMenuWindow (e);
                     }
                 }
