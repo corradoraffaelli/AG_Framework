@@ -16,6 +16,7 @@ namespace AG_Framework
         public string graphName = "New chapter";
 
         public List<AG_Node> nodes;
+        public List<AG_NodeLink> links;
 
         private void OnEnable()
         {
@@ -49,6 +50,14 @@ namespace AG_Framework
 
 			return nodeGraph;
 		}
+
+        public void AddLink(AG_NodeLink linkToAdd)
+        {
+            if (links == null)
+                links = new List<AG_NodeLink>();
+
+            links.Add(linkToAdd);
+        }
 
 
 //		public static void UnloadGraph()

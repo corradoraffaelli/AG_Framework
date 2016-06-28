@@ -11,7 +11,9 @@ namespace AG_Framework
         InventoryItem,
         UseCombine,
         ChangeSceneHotspot,
-        ChangeSprite
+        ChangeSprite,
+
+        Test
     }
 
     public enum AG_Verbs

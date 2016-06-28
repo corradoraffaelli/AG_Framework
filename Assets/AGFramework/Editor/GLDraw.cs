@@ -212,12 +212,31 @@
 			{
 				Vector2 distance = start - end;
 
-				Vector2 tangentA = start;
-				tangentA.x -= (distance/2).x;
-				Vector2 tangentB = end;
-				tangentB.x += (distance/2).x;
 
-				int segments = Mathf.FloorToInt((distance.magnitude / 20) * 3);
+
+            //Vector2 tangentA = start;
+            //tangentA.x -= (distance/2).x;
+            //Vector2 tangentB = end;
+            //tangentB.x += (distance/2).x;
+
+            //Debug.Log(distance);
+
+            //float offset = distance.x
+
+            bool cross = end.x < start.x;
+            float xOffset = Mathf.Abs(distance.x / 1.4f);
+            float yOffset = distance.y / 5.0f;
+            if (cross)
+            {
+                xOffset = Mathf.Abs(distance.x);
+                yOffset = distance.y / 2.0f;
+            }
+               
+
+            Vector2 tangentA = new Vector2(start.x + xOffset, start.y - yOffset);
+            Vector2 tangentB = new Vector2(end.x - xOffset, end.y + yOffset);
+
+            int segments = Mathf.FloorToInt((distance.magnitude / 20) * 3);
 
 				DrawBezier(start, tangentA, end, tangentB, color, width, segments);
 			}

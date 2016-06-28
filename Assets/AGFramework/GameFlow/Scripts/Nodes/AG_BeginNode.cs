@@ -12,8 +12,8 @@ namespace AG_Framework
 
 			nodeSize = new Vector2(150.0f, 80.0f);
 
-			hasInputEvent = false;
-			hasOutputEvent = true;
+			//hasInputEvent = false;
+			//hasOutputEvent = true;
 		}
 
 	}
