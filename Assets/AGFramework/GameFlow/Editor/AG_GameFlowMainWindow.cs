@@ -44,11 +44,6 @@ namespace AG_Framework
         {
             currentWindow = EditorWindow.GetWindow<AG_GameFlowMainWindow>();
             currentWindow.titleContent = new GUIContent("Game Flow");
-
-
-            
-            //currentWindow.linkPointTexture
-
         }
 
         private void OnEnable()
@@ -101,13 +96,6 @@ namespace AG_Framework
 
 
 
-
-
-
-
-
-            //			subjectnerd.GLDraw.DrawConnectingCurve (new Vector2 (10.0f, 30.0f), new Vector2 (500.0f, 300.0f), Color.red, 1.5f);
-
             //Bottom Area (Chapter choose)
             //Rect bottomRect = new Rect(10, position.height - 30.0f, 200, 30.0f);
             //GUILayout.BeginArea(bottomRect);
@@ -126,7 +114,7 @@ namespace AG_Framework
                     subjectnerd.GLDraw.DrawConnectingCurve(clickedOutputPoint.imageRect.center, e.mousePosition, Color.red, 1.2f);
             }
 
-
+			UpdateLinks ();
 
 			//if (e.type == EventType.ScrollWheel)
 			//{
@@ -164,158 +152,14 @@ namespace AG_Framework
 
             ProcessMouseDragged(e);
 
+			ProcessMouseDraggedOverWindow (e);
+
             ProcessMouseUpOverPoint(e);
 
             //ProcessMouseUpOverWindow(e);
 
             // Remember to call this method also in the others mouseUp events
             ProcessGenericMouseUp(e);
-
-            //if (currentGraph != null && currentGraph.nodes != null) {
-            //	foreach (AG_Node node in currentGraph.nodes) {
-            //		if (node.inputLinkRect.Contains (e.mousePosition) && e.type == EventType.MouseDown && e.button == 0) {
-
-            //			draggingLinkNode = true;
-            //			clickedInputNode = node;
-
-            //			return;
-            //		}
-            //		else if (node.outputLinkRect.Contains (e.mousePosition) && e.type == EventType.MouseDown && e.button == 0) {
-
-            //			draggingLinkNode = true;
-            //			clickedOutputNode = node;
-
-            //			return;
-            //		}
-            //	}
-            //}
-
-            //         if (currentGraph != null && currentGraph.nodes != null)
-            //         {
-            //             foreach(AG_Node node in currentGraph.nodes)
-            //             {
-            //                 if (node.nodeRect.Contains(e.mousePosition))
-            //                 {
-            //                     if (e.type == EventType.mouseDown)
-            //                     {
-            //                         if (e.button == 0)
-            //                         {
-            //					ProcessNodeLeftClick (e, node);
-            //					selectedNode = node;
-            //                         } else if (e.button == 1)
-            //                         {
-            //					ProcessNodeRightClick (e, node);
-            //                         }
-
-            //                         return;
-            //                     }
-
-            //                 }
-            //             }
-            //         }
-
-            //         if (windowRect.Contains(e.mousePosition))
-            //         {
-            //             if (e.type == EventType.MouseDown)
-            //             {
-            //                 if (e.button == 0)
-            //                 {
-            //                     Debug.Log("Left click inside window");
-            //                 }
-
-            //                 if (e.button == 1)
-            //                 {
-            //			ProcessContextMenuWindow (e);
-            //                 }
-            //             }
-            //         }
-
-            ////If I'm dragging the mouse (left button) I move the selectedNode
-            //if (e.type == EventType.MouseDrag)
-            //{
-            //	if (e.button == 0)
-            //	{
-            //		selectedNode.MouseDragged (e);
-            //	} 
-
-            //	return;
-            //}
-
-            // If the left mouse button is left, I deselect everything
-            //if (e.button == 0 && e.type == EventType.mouseUp) {
-            //DeselectAllNodes ();
-
-            //				if (draggingLinkNode) {
-            //					if (currentGraph != null && currentGraph.nodes != null) {
-            //						foreach (AG_Node node in currentGraph.nodes) {
-            //							if (clickedInputNode != null) {
-            //								if (node.outputLinkRect.Contains (e.mousePosition) && e.type == EventType.MouseUp && e.button == 0) {
-
-            //									AG_Node.LinkNode linkNode = new AG_Node.LinkNode ();
-            //									linkNode.otherNode = clickedInputNode;
-            //									linkNode.input = false;
-
-            //									if (node.outputNodes == null)
-            //										node.outputNodes = new List<AG_Node.LinkNode> ();
-            //									node.outputNodes.Add (linkNode);
-
-            //									AG_Node.LinkNode inputLinkNode = new AG_Node.LinkNode ();
-            //									inputLinkNode.otherNode = node;
-            //									inputLinkNode.input = true;
-
-            //									if (clickedInputNode.inputNodes == null)
-            //										clickedInputNode.inputNodes = new List<AG_Node.LinkNode> ();
-            //									clickedInputNode.inputNodes.Add (inputLinkNode);
-
-            ////									return;
-            //								}
-            //							}
-
-            //							if (clickedOutputNode != null) {
-            //								if (node.inputLinkRect.Contains (e.mousePosition) && e.type == EventType.MouseUp && e.button == 0) {
-
-            //									AG_Node.LinkNode linkNode = new AG_Node.LinkNode ();
-            //									linkNode.otherNode = clickedOutputNode;
-            //									linkNode.input = true;
-
-            //									if (node.inputNodes == null)
-            //										node.inputNodes = new List<AG_Node.LinkNode> ();
-            //									node.inputNodes.Add (linkNode);
-
-            //									AG_Node.LinkNode outputLinkNode = new AG_Node.LinkNode ();
-            //									outputLinkNode.otherNode = node;
-            //									outputLinkNode.input = false;
-
-            //									if (clickedOutputNode.outputNodes == null)
-            //										clickedOutputNode.outputNodes = new List<AG_Node.LinkNode> ();
-            //									clickedOutputNode.outputNodes.Add (outputLinkNode);
-
-            ////									return;
-            //								}
-            //							}
-
-            ////							if (node.inputLinkRect.Contains (e.mousePosition) && e.type == EventType.MouseDown && e.button == 0) {
-            ////
-            ////								draggingLinkNode = true;
-            ////								clickedInputNode = node;
-            ////
-            ////								return;
-            ////							}
-            ////							else if (node.outputLinkRect.Contains (e.mousePosition) && e.type == EventType.MouseDown && e.button == 0) {
-            ////
-            ////								draggingLinkNode = true;
-            ////								clickedOutputNode = node;
-            ////
-            ////								return;
-            ////							}
-            //						}
-            //					}
-            //    }
-
-            //    draggingLinkNode = false;
-            //    clickedInputNode = null;
-            //    clickedOutputNode = null;
-            //}
 
 
         }
@@ -346,6 +190,28 @@ namespace AG_Framework
             }
         }
 
+		private void ProcessMouseDraggedOverWindow(Event e)
+		{
+			//If I'm dragging the mouse (left button) I move the selectedNode
+			bool isLeftDragged = e.button == 0 && e.type == EventType.MouseDrag;
+
+			if (isLeftDragged && !draggingLinkNode)
+			{
+				if (selectedNode == null) 
+				{
+					if (currentGraph != null && currentGraph.nodes != null) 
+					{
+						foreach (AG_Node node in currentGraph.nodes) 
+						{
+							node.DragNode (e);
+						}
+					}
+				}
+
+				e.Use();
+			}
+		}
+
         private void ProcessMouseDownOverNode(Event e)
         {
             bool isLeftClickDown = e.type == EventType.MouseDown && e.button == 0;
@@ -361,8 +227,8 @@ namespace AG_Framework
                         {
                             if (isLeftClickDown)
                             {
-                                node.LeftClick(e);
-                                selectedNode = node;
+								if (node.CanBeDragged (e))
+									selectedNode = node;
                             }
                             else if (isRightClickDown)
                             {
@@ -406,11 +272,25 @@ namespace AG_Framework
 
             if (isLeftDragged)
             {
-                selectedNode.MouseDragged(e);
+				if (selectedNode != null) 
+				{
+					selectedNode.DragNode (e);
 
-                e.Use();
+					e.Use();
+				}
+//				else 
+//				{
+//					if (currentGraph != null && currentGraph.nodes != null) 
+//					{
+//						foreach (AG_Node node in currentGraph.nodes) 
+//						{
+//							node.DragNode (e);
+//						}
+//					}
+//				}
+
+                
             }
-
 
         }
 
@@ -433,7 +313,7 @@ namespace AG_Framework
                                     if (CanCreateLink(clickedOutputPoint, point))
                                     {
                                         AG_NodeLink newLink = new AG_NodeLink(clickedInputNode, clickedOutputPoint, node, point);
-                                        currentGraph.AddLink(newLink);
+//                                        currentGraph.AddLink(newLink);
                                         clickedOutputPoint.AddLink(newLink);
                                         point.AddLink(newLink);
                                     }
@@ -449,14 +329,43 @@ namespace AG_Framework
             }
         }
 
+		private void UpdateLinks()
+		{
+			if (currentGraph != null) {
+				if (currentGraph.links == null)
+					currentGraph.links = new List<AG_NodeLink> ();
+
+				currentGraph.links.Clear ();
+
+				if (currentGraph.nodes != null) {
+					foreach (AG_Node node in currentGraph.nodes) {
+						if (node.outputPoints != null) {
+
+							foreach (AG_NodeLinkPoint point in node.outputPoints) {
+								if (point.links != null) {
+									foreach (AG_NodeLink link in point.links) {
+										currentGraph.links.Add (link);									}
+										
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
         bool CanCreateLink(AG_NodeLinkPoint beginningPoint, AG_NodeLinkPoint endingPoint)
         {
             int beginningPointLinkNumber = beginningPoint.maxLinks;
             int endingPointLinkNumber = endingPoint.maxLinks;
 
-            bool isMaxNumberInBegin = beginningPoint.links.Count >= beginningPointLinkNumber;
-            bool isMaxNumberInEnd = endingPoint.links.Count >= endingPointLinkNumber;
-            Debug.Log(isMaxNumberInBegin + " " + isMaxNumberInEnd);
+			bool isMaxNumberInBegin = false;
+			if (beginningPoint.links != null)
+            	isMaxNumberInBegin = beginningPoint.links.Count >= beginningPointLinkNumber;
+			
+			bool isMaxNumberInEnd = false;
+			if (endingPoint.links != null)
+				isMaxNumberInEnd = endingPoint.links.Count >= endingPointLinkNumber;
 
             if (isMaxNumberInBegin || isMaxNumberInEnd || IsThereTheSameLink(beginningPoint, endingPoint))
                 return false;
@@ -488,6 +397,8 @@ namespace AG_Framework
                 draggingLinkNode = false;
                 clickedInputNode = null;
                 clickedOutputPoint = null;
+
+				selectedNode = null;
 
                 e.Use();
             }

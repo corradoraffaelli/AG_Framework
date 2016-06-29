@@ -101,24 +101,34 @@ namespace AG_Framework
 			return currentNode;
 		}
 
-		public void MouseDragged(Event e)
+		public void DragNode(Event e)
 		{
-			if (isSelected)
-			{
+//			if (isSelected)
+//			{
 				nodeRect.x += e.delta.x;
 				nodeRect.y += e.delta.y;
-			}
+//			}
 		}
 
-		public void LeftClick(Event e)
+		public bool CanBeDragged(Event e)
 		{
-			//I select the node for moving only if the click is in the upper part
-
 			Rect overPosition = new Rect (nodeRect.x, nodeRect.y, nodeSize.x, 30.0f);
 
 			if (overPosition.Contains (e.mousePosition))
-				isSelected = true;
+				return true;
+			else
+				return false;
 		}
+
+//		public void LeftClick(Event e)
+//		{
+//			//I select the node for moving only if the click is in the upper part
+//
+//			Rect overPosition = new Rect (nodeRect.x, nodeRect.y, nodeSize.x, 30.0f);
+//
+//			if (overPosition.Contains (e.mousePosition))
+//				isSelected = true;
+//		}
 
 
     }
